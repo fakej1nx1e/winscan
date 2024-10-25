@@ -4,6 +4,7 @@ WinScan is a powershell file portable tool designed to repair corrupt Windows OS
 
 1. `SFC /ScanNow`: Scans and repairs Windows system files.
 2. `CHKDSK`: Scan local drives (C: drive) for bad sectors (use the `/R` parameter for HDD drives).
+3. `DISM`: Deployment Image Servicing and Management (DISM) is a command-line tool used to service and prepare Windows images. It can be used to repair system files and prepare Windows installation media.
 
 ## Features
 
