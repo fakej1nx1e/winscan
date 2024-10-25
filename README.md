@@ -8,14 +8,14 @@ WinScan is a powershell file portable tool designed to repair corrupt Windows OS
 
 ## Features
 
-- Automated repair process: Execute all repair commands with a single command.
+- Automated repair process: Execute all repair commands automated.
 - Sequential execution: Ensures that the commands run in the correct order.
 
 ## Usage
 
 1. Open `start.cmd`
 2. Follow the prompts and wait until the repair process is completed
-- If you encounter any problems, please copy the entire WinScanLog.txt file to 'issues'.
+- If you encounter any problems, please copy the entire `WinScanLog.txt` file to 'issues'.
 
 
 ## Support
