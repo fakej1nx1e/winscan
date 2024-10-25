@@ -28,4 +28,4 @@ This project is licensed under the MIT License.
 
 ---
 
-**Note**: Always create a system restore point before running any repair tools. Use this tool at your own risk and use ONLY the release tool. **AND** if this tool doesnt work, than the only option for you, is to reset your Windows.
+**Note**: Always create a system restore point before running any repair tools. Use this tool at your own risk and use ONLY the release tool. **AND** if this tool doesnt repair your windows, than the only option for you, is to reset your Windows.
