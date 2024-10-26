@@ -14,6 +14,4 @@ if not exist "%PowerShellScript%" (
 :: Run PowerShell with administrator rights
 powershell -Command "Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \"%CD%\%PowerShellScript%\"' -Verb RunAs"
 
-cmd /k
-
 endlocal
