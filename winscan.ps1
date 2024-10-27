@@ -15,30 +15,60 @@ function Write-LogMessage {
 }
 
 try {
+    # Verzeichnis für Logdatei prüfen
+    if (-not (Test-Path $PSScriptRoot)) {
+        New-Item -ItemType Directory -Path $PSScriptRoot
+    }
+
     # Run CHKDSK
-    Write-LogMessage "(1/4) Running CHKDSK..."
-    $chkdskResult = chkdsk /scan
-    $chkdskResult | Out-File -Append $logFile
+    Write-LogMessage "(1/5) Running CHKDSK..."
+    $chkdskResult = chkdsk /scan 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-LogMessage "CHKDSK failed: $chkdskResult"
+    } else {
+        $chkdskResult | Out-File -Append $logFile
+    }
 
     # Run SFC
-    Write-LogMessage "(2/4) Running SFC..."
-    $sfcResult = sfc /scannow
-    $sfcResult | Out-File -Append $logFile
+    Write-LogMessage "(2/5) Running SFC..."
+    $sfcResult = sfc /scannow 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-LogMessage "SFC failed: $sfcResult"
+    } else {
+        $sfcResult | Out-File -Append $logFile
+    }
 
     # Run DISM
-    Write-LogMessage "(3/4) Running DISM..."
-    $dismResult = DISM /Online /Cleanup-Image /RestoreHealth
-    $dismResult | Out-File -Append $logFile
+    Write-LogMessage "(3/5) Running DISM..."
+    $dismResult = DISM /Online /Cleanup-Image /RestoreHealth 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-LogMessage "DISM failed: $dismResult"
+    } else {
+        $dismResult | Out-File -Append $logFile
+    }
 
     # Run SFC again
-    Write-LogMessage "(4/4) Running SFC again..."
-    $sfcResult2 = sfc /scannow
-    $sfcResult2 | Out-File -Append $logFile
+    Write-LogMessage "(4/5) Running SFC again..."
+    $sfcResult2 = sfc /scannow 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-LogMessage "Second SFC failed: $sfcResult2"
+    } else {
+        $sfcResult2 | Out-File -Append $logFile
+    }
+
+    # Check Windows Updates
+    Write-LogMessage "(5/5) Checking for Windows Updates..."
+    $updateResult = usoclient ScanInstallWait 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-LogMessage "Windows Update check failed: $updateResult"
+    } else {
+        Write-LogMessage "Windows Update check initiated."
+    }
 
     Write-LogMessage "Repair process completed. Check $logFile for details."
 }
 catch {
-    Write-LogMessage "An error occurred: $_"
+    Write-LogMessage "An unexpected error occurred: $_"
 }
 finally {
     pause
