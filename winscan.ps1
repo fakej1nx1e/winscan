@@ -21,7 +21,7 @@ try {
     }
 
     # Run CHKDSK
-    Write-LogMessage "(1/5) Running CHKDSK..."
+    Write-LogMessage "(1/4) Running CHKDSK..."
     $chkdskResult = chkdsk /scan 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-LogMessage "CHKDSK failed: $chkdskResult"
@@ -30,7 +30,7 @@ try {
     }
 
     # Run SFC
-    Write-LogMessage "(2/5) Running SFC..."
+    Write-LogMessage "(2/4) Running SFC..."
     $sfcResult = sfc /scannow 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-LogMessage "SFC failed: $sfcResult"
@@ -39,7 +39,7 @@ try {
     }
 
     # Run DISM
-    Write-LogMessage "(3/5) Running DISM..."
+    Write-LogMessage "(3/4) Running DISM..."
     $dismResult = DISM /Online /Cleanup-Image /RestoreHealth 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-LogMessage "DISM failed: $dismResult"
@@ -48,21 +48,12 @@ try {
     }
 
     # Run SFC again
-    Write-LogMessage "(4/5) Running SFC again..."
+    Write-LogMessage "(4/4) Running SFC again..."
     $sfcResult2 = sfc /scannow 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-LogMessage "Second SFC failed: $sfcResult2"
     } else {
         $sfcResult2 | Out-File -Append $logFile
-    }
-
-    # Check Windows Updates
-    Write-LogMessage "(5/5) Checking for Windows Updates..."
-    $updateResult = usoclient ScanInstallWait 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        Write-LogMessage "Windows Update check failed: $updateResult"
-    } else {
-        Write-LogMessage "Windows Update check initiated."
     }
 
     Write-LogMessage "Repair process completed. Check $logFile for details."
