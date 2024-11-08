@@ -57,7 +57,7 @@ try {
     }
 
     Write-LogMessage "(5/5) Running Windows Defender Quick Scan..."
-    $defenderResult = Start-MpScan -ScanType QuickScan -ErrorAction Stop
+    $defenderResult = Start-MpScan -ScanType QuickScan
     if ($LASTEXITCODE -ne 0) {
         Write-LogMessage "Windows Defender scan failed: $defenderResult"
     } else {
