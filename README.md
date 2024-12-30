@@ -14,7 +14,7 @@ WinScan is a powershell file portable tool designed to repair corrupt Windows OS
 
 ## Usage
 
-1. Download this repository (If your antivirus software detects an issue, disable it temporarily. Antivirus programs are trash sometimes lol. If you have some trust issuse, here is an virustotal [link](https://www.virustotal.com/gui/file/5631725cc39c5d5748087695a2abedd920538e50835905dc8f0cf8a7273df81e?nocache=1).)
+1. Download this repository (If your antivirus software detects an issue, disable it temporarily. Antivirus programs are trash sometimes lol. If you have some trust issuse, here is an virustotal [link](https://www.virustotal.com/gui/file/2d1766826b5cfca24223a3308897f4870565cb7226f0883e8e6540d2f4e62f90).)
 2. Open `start.cmd`
 3. Sit back and relaaaaaax.
 - If you encounter any problems, please copy the entire `WinScanLog.txt` file to 'issues'.
