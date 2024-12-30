@@ -1,33 +1,46 @@
-# winscan - Windows Repair Tool
+# WinScan - Windows Repair Tool
 
-WinScan is a powershell file portable tool designed to repair corrupt Windows OS (10/11) files and fix disk errors. It achieves this by executing the following commands in the specified order:
-
-1. `SFC /ScanNow`: Scans and repairs Windows system files.
-2. `CHKDSK`: Scan local drives (C: drive) for bad sectors (use the `/R` parameter for HDD drives).
-3. `DISM`: Deployment Image Servicing and Management (DISM) is a command-line tool used to service and prepare Windows images. It can be used to repair system files and prepare Windows installation media.
-4. `MpScan` or Windows Defender is just quick scanning your computer.
+WinScan is a portable PowerShell tool designed to repair corrupt Windows files (Windows 10/11) and fix disk errors. It allows users to choose between a scan mode (check only) and a repair mode (fix issues).
 
 ## Features
 
-- Automated repair process: Execute all repair commands automated.
-- Sequential execution: Ensures that the commands run in the correct order.
+- **Two Modes**: Select either system diagnostics or full repair.
+- **Integrated Tools**: Sequentially runs the following commands:
+  - `CHKDSK`: Scans and repairs disk errors.
+  - `SFC`: Scans and repairs Windows system files.
+  - `DISM`: Checks and repairs the Windows component store.
+- **Logging**: All results are saved in the `WinScanLog.txt` file.
 
 ## Usage
 
-1. Download this repository (If your antivirus software detects an issue, disable it temporarily. Antivirus programs are trash sometimes lol. If you have some trust issuse, here is an virustotal [link](https://www.virustotal.com/gui/file/2d1766826b5cfca24223a3308897f4870565cb7226f0883e8e6540d2f4e62f90).)
-2. Open `start.cmd`
-3. Sit back and relaaaaaax.
-- If you encounter any problems, please copy the entire `WinScanLog.txt` file to 'issues'.
+1. **Download**: Download the script file from the repository.
+2. **Run as Administrator**: Execute the script with administrator privileges. If flagged by antivirus software, temporarily disable it or verify the script with a service like [VirusTotal](https://www.virustotal.com/).
+3. **Choose a Mode**:
+   - **1**: Scan only.
+   - **2**: Repair issues.
+4. **Review Log File**: After execution, check the `WinScanLog.txt` file for detailed results.
 
+## Command Details
+
+- **CHKDSK**:
+  - Scan Mode: `chkdsk /scan` - Checks the disk for errors.
+  - Repair Mode: `chkdsk /f /r` - Fixes detected disk errors.
+- **SFC**:
+  - Scan Mode: `sfc /verifyonly` - Verifies the integrity of system files without making changes.
+  - Repair Mode: `sfc /scannow` - Repairs corrupted system files.
+- **DISM**:
+  - Scan Mode: `dism /online /cleanup-image /checkhealth` and `dism /online /cleanup-image /scanhealth`.
+  - Repair Mode: `dism /online /cleanup-image /restorehealth` - Repairs the Windows component store.
+
+## Important Notes
+
+- Always create a **system restore point** before running repair tools.
+- **Use at your own risk**: If repairs fail to resolve issues, a clean Windows installation might be your only option.
 
 ## Support
 
-If you encounter any issues or have questions, feel free to open an issue on the GitHub repository.
+If you encounter any issues or have questions, please open an issue on the GitHub repository. Include the `WinScanLog.txt` file for faster analysis.
 
 ## License
 
-This project is licensed under the MIT License.
-
----
-
-**Note**: Always create a system restore point before running any repair tools. Use this tool at your own risk and use ONLY the release tool. **AND** if this tool doesnt repair your windows, than the only option for you, is to reset your Windows.
+This project is licensed under the **MIT License**.
