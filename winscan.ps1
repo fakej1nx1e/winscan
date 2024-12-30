@@ -1,4 +1,4 @@
-if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+if (![Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Host "Please run this script with administrator privileges." -ForegroundColor Red
     pause
     exit 1
@@ -14,14 +14,11 @@ function Write-LogMessage {
     Write-Host $message
 }
 
-try {
-    # Check directory for log file
-    if (-not (Test-Path $PSScriptRoot)) {
-        New-Item -ItemType Directory -Path $PSScriptRoot
-    }
+function Run-Scan {
+    Write-LogMessage "Starting system scan..."
 
     # Run CHKDSK
-    Write-LogMessage "(1/5) Running CHKDSK..."
+    Write-LogMessage "(1/3) Running CHKDSK..."
     $chkdskResult = chkdsk /scan 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-LogMessage "CHKDSK failed: $chkdskResult"
@@ -30,8 +27,8 @@ try {
     }
 
     # Run SFC
-    Write-LogMessage "(2/5) Running SFC..."
-    $sfcResult = sfc /scannow 2>&1
+    Write-LogMessage "(2/3) Running SFC..."
+    $sfcResult = sfc /verifyonly 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-LogMessage "SFC failed: $sfcResult"
     } else {
@@ -39,36 +36,71 @@ try {
     }
 
     # Run DISM
-    Write-LogMessage "(3/5) Running DISM..."
-    $dismResult = DISM /Online /Cleanup-Image /RestoreHealth 2>&1
+    Write-LogMessage "(3/3) Running DISM /CheckHealth and /ScanHealth..."
+    $dismCheckResult = dism /online /cleanup-image /checkhealth 2>&1
+    $dismScanResult = dism /online /cleanup-image /scanhealth 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Write-LogMessage "DISM failed: $dismResult"
+        Write-LogMessage "DISM check/scan failed: $dismCheckResult $dismScanResult"
     } else {
-        $dismResult | Out-File -Append $logFile
+        $dismCheckResult | Out-File -Append $logFile
+        $dismScanResult | Out-File -Append $logFile
     }
 
-    # Run SFC again
-    Write-LogMessage "(4/5) Running SFC again..."
-    $sfcResult2 = sfc /scannow 2>&1
+    Write-LogMessage "System scan completed."
+}
+
+function Run-Repair {
+    Write-LogMessage "Starting system repair..."
+
+    # Run CHKDSK with repair
+    Write-LogMessage "(1/3) Running CHKDSK with repair..."
+    $chkdskResult = chkdsk /f /r 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Write-LogMessage "Second SFC failed: $sfcResult2"
+        Write-LogMessage "CHKDSK repair failed: $chkdskResult"
     } else {
-        $sfcResult2 | Out-File -Append $logFile
+        $chkdskResult | Out-File -Append $logFile
     }
 
-    Write-LogMessage "(5/5) Running Windows Defender Quick Scan..."
-    $defenderResult = Start-MpScan -ScanType QuickScan
+    # Run SFC with repair
+    Write-LogMessage "(2/3) Running SFC with repair..."
+    $sfcResult = sfc /scannow 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Write-LogMessage "Windows Defender scan failed: $defenderResult"
+        Write-LogMessage "SFC repair failed: $sfcResult"
     } else {
-        Write-LogMessage "Windows Defender scan completed successfully."
+        $sfcResult | Out-File -Append $logFile
     }
 
-    Write-LogMessage "Repair process completed. Check $logFile for details."
+    # Run DISM with repair
+    Write-LogMessage "(3/3) Running DISM /RestoreHealth..."
+    $dismRepairResult = dism /online /cleanup-image /restorehealth 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-LogMessage "DISM repair failed: $dismRepairResult"
+    } else {
+        $dismRepairResult | Out-File -Append $logFile
+    }
+
+    Write-LogMessage "System repair completed."
 }
-catch {
-    Write-LogMessage "An unexpected error occurred: $_"
+
+# User selection
+Write-Host "Select an option:" -ForegroundColor Cyan
+Write-Host "1. Scan only (no changes made)" -ForegroundColor Yellow
+Write-Host "2. Repair (fix issues)" -ForegroundColor Yellow
+
+$choice = Read-Host "Enter your choice (1 or 2)"
+
+switch ($choice) {
+    "1" {
+        Run-Scan
+    }
+    "2" {
+        Run-Repair
+    }
+    default {
+        Write-Host "Invalid choice. Exiting." -ForegroundColor Red
+        exit 1
+    }
 }
-finally {
-    pause
-}
+
+Write-LogMessage "Operation completed. See log file at $logFile for details."
+pause
