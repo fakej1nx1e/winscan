@@ -29,7 +29,7 @@ WinScan is a portable PowerShell tool designed to repair corrupt Windows files (
   - Scan Mode: `sfc /verifyonly` - Verifies the integrity of system files without making changes.
   - Repair Mode: `sfc /scannow` - Repairs corrupted system files.
 - **DISM**:
-  - Scan Mode: `dism /online /cleanup-image /checkhealth` and `dism /online /cleanup-image /scanhealth`.
+  - Scan Mode: `dism /online /cleanup-image /scanhealth`.
   - Repair Mode: `dism /online /cleanup-image /restorehealth` - Repairs the Windows component store.
 
 ## Important Notes
