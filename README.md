@@ -17,7 +17,7 @@ WinScan is a portable PowerShell tool designed to repair corrupt Windows files (
    ```
    irm https://raw.githubusercontent.com/fakej1nx1e/winscan/refs/heads/master/winscan.ps1 | iex
    ```
-  - If flagged by antivirus software, temporarily disable it or verify the script with a service like [VirusTotal](https://www.virustotal.com/gui/file/2d1766826b5cfca24223a3308897f4870565cb7226f0883e8e6540d2f4e62f90).
+  - If flagged by antivirus software, temporarily disable it or verify the script with a service like [VirusTotal](https://www.virustotal.com).
 2. **Choose a Mode**:
    - **1**: Scan only.
    - **2**: Repair issues.
